@@ -64,8 +64,8 @@ export function updateMatch(ctx, input, audio, dt) {
 function controlUser(p, input, ball, audio, dt) {
   const ax = input.axis();
   const sprint = input.down("shift");
-  const speed = 180 + p.attrs.speed * 3.1 + (sprint ? 120 : 0);
-  const accel = 210 + p.attrs.acceleration * 2.8;
+  const speed = 245 + p.attrs.speed * 4.1 + (sprint ? 155 : 0);
+  const accel = 320 + p.attrs.acceleration * 3.6;
   const d = Math.hypot(ax.x, ax.y) || 1;
   if (ax.x || ax.y) {
     p.vx += (ax.x / d) * accel * dt;
