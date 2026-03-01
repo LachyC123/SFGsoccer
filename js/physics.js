@@ -34,8 +34,8 @@ export function updateBall(ball, dt, particles) {
 export function resolvePlayerMotion(p, dt) {
   p.x += p.vx * dt;
   p.y += p.vy * dt;
-  p.vx *= 0.86;
-  p.vy *= 0.86;
+  p.vx *= 0.93;
+  p.vy *= 0.93;
   p.anim += dt * Math.hypot(p.vx, p.vy) * 0.03;
   const px = MATCH.pitch;
   p.x = clamp(p.x, px.x + p.r, px.x + px.w - p.r);

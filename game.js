@@ -121,30 +121,78 @@ function drawPitch() {
 
 function drawTeam(team) {
   for (const p of team.players) {
-    ctx.globalAlpha = 0.3;
+    const bob = Math.sin(p.anim) * 1.8;
+    const stride = Math.sin(p.anim * 1.6) * 3;
+    const look = p.look || { skin: "#e2b88c", hair: "short", hairColor: "#2f2018", boots: "#111" };
+
+    ctx.globalAlpha = 0.28;
     ctx.fillStyle = "#000";
     ctx.beginPath();
-    ctx.ellipse(p.x, p.y + 12, 13, 7, 0, 0, Math.PI * 2);
+    ctx.ellipse(p.x, p.y + 15, 11, 6, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalAlpha = 1;
 
-    const bob = Math.sin(p.anim) * 1.8;
     ctx.fillStyle = team.colors.primary;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y + bob, p.r, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillRect(p.x - 7, p.y - 11 + bob, 14, 18);
     ctx.fillStyle = team.colors.secondary;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y + bob, p.r * 0.55, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillRect(p.x - 4, p.y - 11 + bob, 8, 18);
+
     ctx.strokeStyle = team.colors.accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(p.x - 7, p.y - 2 + bob);
+    ctx.lineTo(p.x + 7, p.y - 2 + bob);
+    ctx.stroke();
+
+    ctx.fillStyle = look.skin;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y - 16 + bob, 6.3, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = look.hairColor || "#2f2018";
+    if ((look.hair || "short") === "mohawk") {
+      ctx.fillRect(p.x - 1.5, p.y - 24 + bob, 3, 8);
+    } else if ((look.hair || "short") === "spike") {
+      ctx.beginPath();
+      ctx.moveTo(p.x - 6, p.y - 19 + bob);
+      ctx.lineTo(p.x, p.y - 26 + bob);
+      ctx.lineTo(p.x + 6, p.y - 19 + bob);
+      ctx.closePath();
+      ctx.fill();
+    } else {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y - 19 + bob, 6.5, Math.PI, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.strokeStyle = look.skin;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(p.x - 7, p.y - 8 + bob);
+    ctx.lineTo(p.x - 11, p.y - 2 + bob + stride * 0.35);
+    ctx.moveTo(p.x + 7, p.y - 8 + bob);
+    ctx.lineTo(p.x + 11, p.y - 2 + bob - stride * 0.35);
+    ctx.stroke();
+
+    ctx.strokeStyle = look.boots || "#111";
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.arc(p.x, p.y + bob, p.r - 1, 0, Math.PI * 2);
+    ctx.moveTo(p.x - 4, p.y + 7 + bob);
+    ctx.lineTo(p.x - 4, p.y + 13 + bob + stride);
+    ctx.moveTo(p.x + 4, p.y + 7 + bob);
+    ctx.lineTo(p.x + 4, p.y + 13 + bob - stride);
     ctx.stroke();
+
+    if (Number.isFinite(p.shirt)) {
+      ctx.fillStyle = "#fff";
+      ctx.font = "bold 8px Orbitron, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(String(p.shirt), p.x, p.y + 1 + bob);
+    }
+
     if (p.isUser) {
       ctx.fillStyle = "#fff";
-      ctx.fillRect(p.x - 10, p.y - 30, 20, 5);
+      ctx.fillRect(p.x - 10, p.y - 33, 20, 5);
     }
   }
 }
