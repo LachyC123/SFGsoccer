@@ -48,8 +48,8 @@ function chooseTarget(p, team, opponents, ball, isKeeper) {
 function moveToward(p, tx, ty, reaction, dt) {
   const dx = tx - p.x, dy = ty - p.y;
   const d = Math.hypot(dx, dy) || 1;
-  const maxSpd = 165 + p.attrs.speed * 2.8;
-  const accel = (140 + p.attrs.acceleration * 2.2) * reaction;
+  const maxSpd = 230 + p.attrs.speed * 3.9;
+  const accel = (240 + p.attrs.acceleration * 3.2) * reaction;
   p.vx += (dx / d) * accel * dt;
   p.vy += (dy / d) * accel * dt;
   const sp = Math.hypot(p.vx, p.vy);

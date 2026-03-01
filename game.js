@@ -123,6 +123,7 @@ function drawTeam(team) {
   for (const p of team.players) {
     const bob = Math.sin(p.anim) * 1.8;
     const stride = Math.sin(p.anim * 1.6) * 3;
+    const lean = Math.max(-3.5, Math.min(3.5, p.vx * 0.012));
     const look = p.look || { skin: "#e2b88c", hair: "short", hairColor: "#2f2018", boots: "#111" };
 
     ctx.globalAlpha = 0.28;
@@ -132,10 +133,14 @@ function drawTeam(team) {
     ctx.fill();
     ctx.globalAlpha = 1;
 
-    ctx.fillStyle = team.colors.primary;
+    const jersey = ctx.createLinearGradient(p.x - 8, p.y - 11 + bob, p.x + 8, p.y + 10 + bob);
+    jersey.addColorStop(0, team.colors.primary);
+    jersey.addColorStop(1, team.colors.secondary);
+    ctx.fillStyle = jersey;
     ctx.fillRect(p.x - 7, p.y - 11 + bob, 14, 18);
+
     ctx.fillStyle = team.colors.secondary;
-    ctx.fillRect(p.x - 4, p.y - 11 + bob, 8, 18);
+    ctx.fillRect(p.x - 5, p.y - 11 + bob, 10, 6);
 
     ctx.strokeStyle = team.colors.accent;
     ctx.lineWidth = 2;
@@ -146,32 +151,44 @@ function drawTeam(team) {
 
     ctx.fillStyle = look.skin;
     ctx.beginPath();
-    ctx.arc(p.x, p.y - 16 + bob, 6.3, 0, Math.PI * 2);
+    ctx.arc(p.x + lean * 0.35, p.y - 16 + bob, 6.3, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = look.hairColor || "#2f2018";
     if ((look.hair || "short") === "mohawk") {
-      ctx.fillRect(p.x - 1.5, p.y - 24 + bob, 3, 8);
+      ctx.fillRect(p.x - 1.5 + lean * 0.35, p.y - 24 + bob, 3, 8);
     } else if ((look.hair || "short") === "spike") {
       ctx.beginPath();
-      ctx.moveTo(p.x - 6, p.y - 19 + bob);
-      ctx.lineTo(p.x, p.y - 26 + bob);
-      ctx.lineTo(p.x + 6, p.y - 19 + bob);
+      ctx.moveTo(p.x - 6 + lean * 0.35, p.y - 19 + bob);
+      ctx.lineTo(p.x + lean * 0.35, p.y - 26 + bob);
+      ctx.lineTo(p.x + 6 + lean * 0.35, p.y - 19 + bob);
       ctx.closePath();
       ctx.fill();
     } else {
       ctx.beginPath();
-      ctx.arc(p.x, p.y - 19 + bob, 6.5, Math.PI, Math.PI * 2);
+      ctx.arc(p.x + lean * 0.35, p.y - 19 + bob, 6.5, Math.PI, Math.PI * 2);
       ctx.fill();
     }
+
+    ctx.fillStyle = "#1a1a1a";
+    ctx.beginPath();
+    ctx.arc(p.x - 2 + lean * 0.25, p.y - 16.5 + bob, 0.9, 0, Math.PI * 2);
+    ctx.arc(p.x + 2 + lean * 0.25, p.y - 16.5 + bob, 0.9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(40,25,25,0.75)";
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    ctx.moveTo(p.x - 2 + lean * 0.25, p.y - 13.7 + bob);
+    ctx.quadraticCurveTo(p.x + lean * 0.25, p.y - 12.5 + bob, p.x + 2 + lean * 0.25, p.y - 13.7 + bob);
+    ctx.stroke();
 
     ctx.strokeStyle = look.skin;
     ctx.lineWidth = 2.4;
     ctx.beginPath();
     ctx.moveTo(p.x - 7, p.y - 8 + bob);
-    ctx.lineTo(p.x - 11, p.y - 2 + bob + stride * 0.35);
+    ctx.lineTo(p.x - 11 - lean * 0.35, p.y - 2 + bob + stride * 0.35);
     ctx.moveTo(p.x + 7, p.y - 8 + bob);
-    ctx.lineTo(p.x + 11, p.y - 2 + bob - stride * 0.35);
+    ctx.lineTo(p.x + 11 - lean * 0.35, p.y - 2 + bob - stride * 0.35);
     ctx.stroke();
 
     ctx.strokeStyle = look.boots || "#111";
@@ -182,6 +199,10 @@ function drawTeam(team) {
     ctx.moveTo(p.x + 4, p.y + 7 + bob);
     ctx.lineTo(p.x + 4, p.y + 13 + bob - stride);
     ctx.stroke();
+
+    ctx.fillStyle = team.colors.accent;
+    ctx.fillRect(p.x - 5.2, p.y + 10 + bob + stride - 1.2, 2.4, 2.4);
+    ctx.fillRect(p.x + 2.8, p.y + 10 + bob - stride - 1.2, 2.4, 2.4);
 
     if (Number.isFinite(p.shirt)) {
       ctx.fillStyle = "#fff";
@@ -196,6 +217,7 @@ function drawTeam(team) {
     }
   }
 }
+
 
 function drawBall(ball) {
   ctx.fillStyle = "#fff";
