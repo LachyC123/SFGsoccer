@@ -7,6 +7,9 @@ export function createMatch(opts) {
   const left = makeTeam("left", opts.homeTeam, opts.playerProfile);
   const right = makeTeam("right", opts.awayTeam);
   left.players[2].isUser = true;
+  left.players[2].look = { ...opts.playerProfile.look };
+  left.players[2].shirt = opts.playerProfile.shirt;
+  left.players[2].displayName = opts.playerProfile.name;
 
   return {
     mode: "match",
@@ -61,8 +64,8 @@ export function updateMatch(ctx, input, audio, dt) {
 function controlUser(p, input, ball, audio, dt) {
   const ax = input.axis();
   const sprint = input.down("shift");
-  const speed = 130 + p.attrs.speed * 2.2 + (sprint ? 70 : 0);
-  const accel = 130 + p.attrs.acceleration * 2;
+  const speed = 180 + p.attrs.speed * 3.1 + (sprint ? 120 : 0);
+  const accel = 210 + p.attrs.acceleration * 2.8;
   const d = Math.hypot(ax.x, ax.y) || 1;
   if (ax.x || ax.y) {
     p.vx += (ax.x / d) * accel * dt;
