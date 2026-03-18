@@ -197,7 +197,7 @@ const finalPolishChecklist = [
 const app = document.querySelector('#app');
 
 const state = {
-  screen: 'menu',
+  screen: 'play',
   selectedMode: 'Zone Control',
   selectedHero: heroes[0].name,
   selectedMap: maps[0].name,
