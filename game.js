@@ -23,7 +23,9 @@
     rankTxt: document.getElementById('rankTxt'),
     trophyDelta: document.getElementById('trophyDelta'),
     coinDelta: document.getElementById('coinDelta'),
-    superBtn: document.getElementById('superBtn')
+    superBtn: document.getElementById('superBtn'),
+    queueLine: document.getElementById('queueLine'),
+    resultFlavor: document.getElementById('resultFlavor')
   };
 
   const canvas = document.getElementById('gameCanvas');
@@ -45,7 +47,25 @@
     zoneMin: 190,
     zoneShrinkRate: 5,
     superCharge: 0,
-    currencies: { coins: 120, trophies: 50 }
+    currencies: { coins: 120, trophies: 50 },
+    queueLines: [
+      'Checking nearby skill buckets and ping quality...',
+      'Calibrating lobby balance for a fair opener...',
+      'One player is swapping loadout, almost ready...',
+      'Server warmup in progress — syncing arena hazards...'
+    ],
+    resultLines: {
+      victory: [
+        'Great spacing. You forced every fight on your terms.',
+        'Calm finish. You played the edge perfectly.',
+        'Clinical endgame. Clean peeks, clean closes.'
+      ],
+      defeat: [
+        'Tough loss, but the rotations were improving.',
+        'Close one. You were one pickup from turning it.',
+        'Shaky midgame, strong finish. Queue it back up.'
+      ]
+    }
   };
 
   const controls = {
@@ -120,14 +140,15 @@
       alive: true
     });
 
-    const player = spawn(true, 'Vexa', 1100, 260, '#67d6ff');
+    const player = spawn(true, 'Mara', 1100, 260, '#8cb6dc');
     state.player = player;
     state.entities.push(player);
 
     for (let i = 0; i < 9; i++) {
       const angle = (Math.PI * 2 * i) / 9;
       const r = 830;
-      state.entities.push(spawn(false, `Bot-${i + 1}`, 1100 + Math.cos(angle) * r, 1100 + Math.sin(angle) * r, `hsl(${i * 36},85%,62%)`));
+      const names = ['Kite', 'Rowan', 'Pax', 'Juno', 'Brass', 'Nell', 'Ivo', 'Koda', 'Sable'];
+      state.entities.push(spawn(false, names[i], 1100 + Math.cos(angle) * r, 1100 + Math.sin(angle) * r, `hsl(${25 + i * 17},48%,62%)`));
     }
 
     for (let i = 0; i < 15; i++) {
@@ -308,7 +329,7 @@
     const camY = state.player.y - window.innerHeight / 2;
 
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    ctx.fillStyle = '#d7b18a';
+    ctx.fillStyle = '#8f775f';
     ctx.fillRect(-camX, -camY, world.w, world.h);
 
     ctx.strokeStyle = 'rgba(255,255,255,.07)';
@@ -317,13 +338,13 @@
     }
 
     for (const b of state.bushes) {
-      ctx.fillStyle = '#2f9e54';
+      ctx.fillStyle = '#486e3f';
       ctx.beginPath(); ctx.arc(b.x - camX, b.y - camY, b.r, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#44be67';
+      ctx.fillStyle = '#618f55';
       ctx.beginPath(); ctx.arc(b.x - camX + 8, b.y - camY - 4, b.r * 0.5, 0, Math.PI * 2); ctx.fill();
     }
 
-    ctx.fillStyle = '#3e79da';
+    ctx.fillStyle = '#5f6f89';
     for (const w of state.walls) ctx.fillRect(w.x - camX, w.y - camY, w.w, w.h);
 
     for (const p of state.pickups) {
@@ -390,7 +411,9 @@
     ui.trophies.textContent = state.currencies.trophies;
     ui.coins.textContent = state.currencies.coins;
 
-    ui.resultTitle.textContent = playerWon ? 'VICTORY' : 'DEFEAT';
+    ui.resultTitle.textContent = playerWon ? 'Victory' : 'Defeat';
+    const flavorPool = playerWon ? state.resultLines.victory : state.resultLines.defeat;
+    ui.resultFlavor.textContent = flavorPool[Math.floor(Math.random() * flavorPool.length)];
     ui.rankTxt.textContent = `#${11 - rank}`;
     ui.trophyDelta.textContent = `${trophyDelta >= 0 ? '+' : ''}${trophyDelta}`;
     ui.coinDelta.textContent = `+${coinDelta}`;
@@ -467,6 +490,9 @@
     const int = setInterval(() => {
       p += 18;
       ui.loadingFill.style.width = `${Math.min(100, p)}%`;
+      if (Math.random() < 0.35) {
+        ui.queueLine.textContent = state.queueLines[Math.floor(Math.random() * state.queueLines.length)];
+      }
       if (p >= 100) {
         clearInterval(int);
         ui.loadingFill.style.width = '0%';
