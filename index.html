@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Neon Rift Arena</title>
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div id="app" class="app no-select">
+    <section id="bootScreen" class="screen active">
+      <div class="animated-bg"></div>
+      <div class="boot-content">
+        <h1 class="logo-text">NEON RIFT <span>ARENA</span></h1>
+        <p class="tagline">Competitive Pocket Hero Shooter</p>
+        <div class="loading-wrap">
+          <div id="loadingBar" class="loading-bar"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="lobbyScreen" class="screen hidden">
+      <div class="animated-bg lobby-bg"></div>
+      <header class="topbar glass">
+        <div class="player-meta">
+          <span class="level-pill">Lv <strong id="playerLevel">7</strong></span>
+          <div class="xp-track"><div id="xpFill" class="xp-fill"></div></div>
+        </div>
+        <div class="currencies">
+          <div class="currency">⚡ <span id="energy">31</span></div>
+          <div class="currency">◈ <span id="coins">820</span></div>
+        </div>
+      </header>
+
+      <main class="lobby-main">
+        <div class="hero-showcase glass" id="featuredHero"></div>
+        <button id="playBtn" class="cta-btn">Play Score Clash</button>
+        <nav class="lobby-nav">
+          <button data-screen="heroes" class="nav-btn">Heroes</button>
+          <button data-screen="squad" class="nav-btn">Squad</button>
+          <button data-screen="modes" class="nav-btn">Modes</button>
+          <button data-screen="progress" class="nav-btn">Progress</button>
+          <button data-screen="settings" class="nav-btn">Settings</button>
+        </nav>
+      </main>
+    </section>
+
+    <section id="panelScreen" class="screen hidden">
+      <div class="animated-bg"></div>
+      <header class="panel-header glass">
+        <button id="backToLobby" class="mini-btn">← Lobby</button>
+        <h2 id="panelTitle">Heroes</h2>
+      </header>
+      <div id="panelContent" class="panel-content"></div>
+    </section>
+
+    <section id="versusScreen" class="screen hidden">
+      <div class="animated-bg"></div>
+      <div class="versus-layout">
+        <div class="team-card" id="allyTeamCard"></div>
+        <div class="versus-mark">VS</div>
+        <div class="team-card enemy" id="enemyTeamCard"></div>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen hidden">
+      <canvas id="gameCanvas" width="360" height="640"></canvas>
+      <div id="hud" class="hud">
+        <div class="hud-top glass">
+          <div id="scoreText">Blue 0 · 0 Red</div>
+          <div id="timerText">03:00</div>
+        </div>
+        <div class="hud-bottom">
+          <div class="player-status glass">
+            <div id="heroName">Rook</div>
+            <div class="hp-track"><div id="hpFill" class="hp-fill"></div></div>
+          </div>
+          <button id="abilityBtn" class="ability-btn">A</button>
+        </div>
+      </div>
+      <div id="touchControls" class="touch-controls">
+        <div id="moveStick" class="stick-zone"><div class="stick-knob"></div></div>
+        <div id="aimStick" class="stick-zone right"><div class="stick-knob"></div></div>
+      </div>
+      <div id="respawnOverlay" class="respawn-overlay hidden"></div>
+    </section>
+
+    <section id="resultsScreen" class="screen hidden">
+      <div class="animated-bg"></div>
+      <div class="results-card glass">
+        <h2 id="resultHeader">Victory</h2>
+        <p id="resultScore">12 - 9</p>
+        <p id="resultStats">Elims 6 · Assists 3 · Deaths 2</p>
+        <div class="reward-block">
+          <div>Coins: +<span id="rewardCoins">0</span></div>
+          <div>XP: +<span id="rewardXp">0</span></div>
+          <div class="xp-track"><div id="resultXpFill" class="xp-fill"></div></div>
+        </div>
+        <div class="result-actions">
+          <button id="playAgainBtn" class="cta-btn">Play Again</button>
+          <button id="returnLobbyBtn" class="nav-btn">Return Lobby</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="scripts/config.js"></script>
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/heroes.js"></script>
+  <script src="scripts/audio.js"></script>
+  <script src="scripts/input.js"></script>
+  <script src="scripts/bots.js"></script>
+  <script src="scripts/game.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>
