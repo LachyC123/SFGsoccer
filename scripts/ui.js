@@ -23,10 +23,33 @@ window.UI = (() => {
 
   function renderLobby(){
     const h = Heroes.byId(state.selectedHero);
-    document.getElementById('featuredHero').innerHTML = `<div><h2>${h.name}</h2><p>${h.role} · ${h.weapon}</p><p>${h.desc}</p></div>`;
+    document.getElementById('featuredHero').innerHTML = `
+      <div class='featured-shell'>
+        <div class='featured-head'>
+          <h2>${h.name}</h2>
+          <span class='role-pill'>${h.role}</span>
+        </div>
+        <div class='hero-portrait' style='background-color:${h.color}22'></div>
+        <p><strong>${h.weapon}</strong> · ${h.desc}</p>
+        <div class='featured-meta'>
+          <div>HP <strong>${h.hp}</strong></div>
+          <div>SPD <strong>${h.speed}</strong></div>
+          <div>CD <strong>${h.cooldown}s</strong></div>
+        </div>
+      </div>`;
     document.getElementById('coins').textContent = state.coins;
     document.getElementById('playerLevel').textContent = state.level;
     document.getElementById('xpFill').style.width = `${state.xp}%`;
+  }
+
+  function heroCard(h, mode='pick') {
+    const actionAttr = mode==='pick' ? `data-hero='${h.id}'` : `data-squad='${h.id}'`;
+    return `<button class='hero-card' ${actionAttr} style='border-color:${h.color}66'>
+      <div class='hero-row'><h3>${h.name}</h3><span class='hero-badge'>${h.role}</span></div>
+      <small>${h.weapon}</small>
+      <p>${h.desc}</p>
+      <small>HP ${h.hp} · SPD ${h.speed} · ABILITY ${h.ability}</small>
+    </button>`;
   }
 
   function openPanel(type){
@@ -35,16 +58,11 @@ window.UI = (() => {
     const content = document.getElementById('panelContent');
     if (type==='heroes') {
       title.textContent = 'Heroes';
-      content.innerHTML = `<div class='card-grid'>${HEROES.map(h=>`
-        <button class='hero-card' data-hero='${h.id}' style='border-color:${h.color}55'>
-          <h3>${h.name}</h3><small>${h.role} · ${h.weapon}</small>
-          <p>${h.desc}</p>
-          <small>HP ${h.hp} · SPD ${h.speed} · ABILITY ${h.ability}</small>
-        </button>`).join('')}</div>`;
+      content.innerHTML = `<div class='card-grid'>${HEROES.map(h=>heroCard(h,'pick')).join('')}</div>`;
       content.querySelectorAll('[data-hero]').forEach(btn=>btn.onclick=()=>{ state.selectedHero=btn.dataset.hero; AudioSys.uiTap(); renderLobby(); });
     } else if (type==='squad') {
       title.textContent = 'Squad';
-      content.innerHTML = `<div class='simple-card'><h3>Preferred Lineup</h3><p>Tap to assign first three slots.</p><div class='card-grid'>${HEROES.map(h=>`<button class='hero-card' data-squad='${h.id}'>${h.name}<br><small>${h.role}</small></button>`).join('')}</div><p>Current: ${state.squad.join(', ')}</p></div>`;
+      content.innerHTML = `<div class='simple-card'><h3>Preferred Lineup</h3><p>Tap to assign first three slots.</p><div class='card-grid'>${HEROES.map(h=>heroCard(h,'squad')).join('')}</div><p>Current: ${state.squad.join(' · ')}</p></div>`;
       content.querySelectorAll('[data-squad]').forEach(btn=>btn.onclick=()=>{ if(!state.squad.includes(btn.dataset.squad)){ state.squad.shift(); state.squad.push(btn.dataset.squad);} renderLobby(); openPanel('squad'); });
     } else if (type==='modes') {
       title.textContent = 'Modes';
@@ -64,8 +82,8 @@ window.UI = (() => {
     setScreen('versusScreen');
     const ally = [state.selectedHero, ...state.squad.slice(0,2)].map(id=>Heroes.byId(id));
     const enemy = ['bulwark','nova','vanta'].map(id=>Heroes.byId(id));
-    document.getElementById('allyTeamCard').innerHTML = `<h3>Pulse Rangers</h3>${ally.map(h=>`<p>${h.name} · ${h.role}</p>`).join('')}`;
-    document.getElementById('enemyTeamCard').innerHTML = `<h3>Crimson Forge</h3>${enemy.map(h=>`<p>${h.name} · ${h.role}</p>`).join('')}`;
+    document.getElementById('allyTeamCard').innerHTML = `<h3>Pulse Rangers</h3>${ally.map(h=>`<div class='team-row'><span>${h.name}</span><span>${h.role}</span></div>`).join('')}`;
+    document.getElementById('enemyTeamCard').innerHTML = `<h3>Crimson Forge</h3>${enemy.map(h=>`<div class='team-row'><span>${h.name}</span><span>${h.role}</span></div>`).join('')}`;
     setTimeout(()=>{ setScreen('gameScreen'); Game.start(state.selectedHero, state.squad); }, 1200);
   }
 
